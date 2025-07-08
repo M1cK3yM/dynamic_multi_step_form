@@ -279,14 +279,12 @@ class _UploadImageState extends State<UploadImageView> {
         });
         onChangeValue.call(fieldKey, imagePath!);
       }
-
     } else if (clickFor.toLowerCase() == "gallery") {
-      List<XFile>? photo = [];
-      // Pick an image.
-      photo = await ImagePicker().pickMultiImage(imageQuality: 50, limit: 1);
-      if (photo.isNotEmpty) {
+      XFile? photo = await ImagePicker()
+          .pickImage(source: ImageSource.gallery, imageQuality: 50);
+      if (photo != null && photo.path.isNotEmpty) {
         setState(() {
-          imagePath = photo![0].path;
+          imagePath = photo.path;
         });
         onChangeValue.call(fieldKey, imagePath!);
       }
