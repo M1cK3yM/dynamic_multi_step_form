@@ -32,7 +32,6 @@ class CommonValidation {
       Map<String, dynamic>? formData,
       isPickFromCalendar}) {
     String? errorMsg = "";
-    print("From check Validation $formData");
     switch (formFieldType) {
       case 'text':
         errorMsg = isValidText(enteredValue, validationStr);
@@ -77,7 +76,6 @@ class CommonValidation {
           formData != null &&
           formData[validationStr['matchField']] != enteredValue) {
         print("$enteredValue  ${formData[validationStr['matchField']]}");
-        print("$formData");
         errorMsg = validationStr['errorMessage']?['matchField'] ??
             'Fields do not match';
       }
