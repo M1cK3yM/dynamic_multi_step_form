@@ -28,8 +28,8 @@ class SingleForm extends StatefulWidget {
       : super(key: singleFormKey);
 
   @override
-  State<SingleForm> createState() =>
-      SingleFormState(index: index, formData: formData,filledFormData:this.filledFormData);
+  State<SingleForm> createState() => SingleFormState(
+      index: index, formData: formData, filledFormData: this.filledFormData);
 }
 
 class SingleFormState extends State<SingleForm> {
@@ -54,31 +54,32 @@ class SingleFormState extends State<SingleForm> {
   String description = "";
   Map<String, dynamic> formInformation = {};
   Map<String, dynamic>? filledFormData;
-  SingleFormState({int index = 0, required this.formData,this.filledFormData}) {
-    Map<String, dynamic>? formSubmitFinalSingleData =  setFormData();
+  SingleFormState(
+      {int index = 0, required this.formData, this.filledFormData}) {
+    Map<String, dynamic>? formSubmitFinalSingleData = setFormData();
     formFieldList = formData['formFields'];
-    if(formSubmitFinalSingleData!=null && formSubmitFinalSingleData.isNotEmpty){
+    if (formSubmitFinalSingleData != null &&
+        formSubmitFinalSingleData.isNotEmpty) {
       List<dynamic>? formFieldListTemp = formFieldList!.map((e) {
         dynamic valueData = e;
         try {
           String key = valueData["elementConfig"]["name"];
           String? fieldType = valueData["elementConfig"]["type"];
           String? valueLocal = formSubmitFinalSingleData[key];
-          if(valueLocal!=null){
-                    if(fieldType!=null && fieldType == "date"){
-                      // valueData['value'] = dateToTimeStamp(dateVal: valueLocal);
-                    }
-                    else{
-                      valueData['value'] = valueLocal;
-                    }
-                  }
+          if (valueLocal != null) {
+            if (fieldType != null && fieldType == "date") {
+              // valueData['value'] = dateToTimeStamp(dateVal: valueLocal);
+            } else {
+              valueData['value'] = valueLocal;
+            }
+          }
           print("$valueLocal ewqwddqwdqw      qwdqwdwqd $valueData");
         } catch (e) {
           print(e);
         }
         return valueData;
       }).toList();
-      formFieldList = formFieldListTemp ;
+      formFieldList = formFieldListTemp;
     }
     try {
       formName = formData['formName'];
@@ -127,10 +128,11 @@ class SingleFormState extends State<SingleForm> {
                           Flexible(
                             child: Text(
                               title!,
-                              style: widget.titleTextStyle ??  TextStyle(
-                                  fontSize: 16,
-                                  color: const Color(0xff222222),
-                                  fontWeight: FontWeight.w500),
+                              style: widget.titleTextStyle ??
+                                  TextStyle(
+                                      fontSize: 16,
+                                      color: const Color(0xff222222),
+                                      fontWeight: FontWeight.w500),
                             ),
                           ),
                         ],
@@ -163,11 +165,13 @@ class SingleFormState extends State<SingleForm> {
   ///Set form value
   Map<String, dynamic>? setFormData() {
     try {
-      int currentPageIndex =  responseParser.getCurrentFormNumber;
+      int currentPageIndex = responseParser.getCurrentFormNumber;
       // print("$currentPageIndex");
-      Map<String, dynamic> _formSubmitFinalData = responseParser.getFilledFormsData;
-      if(_formSubmitFinalData.isNotEmpty){
-        Map<String, dynamic> formSubmitFinalSingleData = _formSubmitFinalData["$currentPageIndex"];
+      Map<String, dynamic> _formSubmitFinalData =
+          responseParser.getFilledFormsData;
+      if (_formSubmitFinalData.isNotEmpty) {
+        Map<String, dynamic> formSubmitFinalSingleData =
+            _formSubmitFinalData["$currentPageIndex"];
         // print("$currentPageIndex");
         return formSubmitFinalSingleData;
       }
@@ -175,7 +179,7 @@ class SingleFormState extends State<SingleForm> {
     } catch (e) {
       print(e);
     }
-  return null;
+    return null;
   }
 
   _autoValidate({bool checkValidOnSubmit = false}) {
@@ -215,7 +219,9 @@ class SingleFormState extends State<SingleForm> {
 
   ///Filter form field according type from json and return view
   Widget _getFormField(
-      {required Map<String, dynamic> data, Map<String, dynamic>? nextData}) {
+      {required Map<String, dynamic> data,
+      Map<String, dynamic>? nextData,
+      Map<String, dynamic>? formData}) {
     String nextFieldKey = "";
     String currentElementKey = "";
     String currentElementType = "";
@@ -273,7 +279,8 @@ class SingleFormState extends State<SingleForm> {
               onChangeValue: (String fieldKey, String value) {
                 formSubmitData[fieldKey] = value;
               },
-              nextFieldKey: nextFieldKey);
+              nextFieldKey: nextFieldKey,
+              formData: formSubmitData);
 
         case "input_qr_scanner":
           responseParser.setFieldFocusNode = currentElementKey;
@@ -312,9 +319,7 @@ class SingleFormState extends State<SingleForm> {
                     onChangeValue: (String fieldKey, List<String> value) {
                       // open this code value list
                       // formSubmitData[fieldKey] = value;
-                    }
-
-                    );
+                    });
               });
 
         case "radio":
@@ -473,7 +478,7 @@ class SingleFormState extends State<SingleForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _getFormField(data: data, nextData: nextData),
+          _getFormField(data: data, nextData: nextData, formData: formData),
           // formSubmitButton!=null?(widget.submitButtonAlignment!=null?(Align(child: formSubmitButton!,alignment: widget.submitButtonAlignment!,)):formSubmitButton!):const SizedBox(),
           const SizedBox(height: 10, width: 10)
         ],
@@ -481,18 +486,23 @@ class SingleFormState extends State<SingleForm> {
     }).toList());
   }
 }
-String dateToTimeStamp({dateVal}){
+
+String dateToTimeStamp({dateVal}) {
   String stringDate1 = '';
-  String dateValue = dateVal == "" ? DateFormat('dd/MM/yyyy').format(DateTime.now()): DateFormat('dd/MM/yyyy').format(DateTime.parse(dateVal));
-  if(dateValue != '0000-00-00' && dateValue != ''){
-    List values1  = dateValue.split("/");
+  String dateValue = dateVal == ""
+      ? DateFormat('dd/MM/yyyy').format(DateTime.now())
+      : DateFormat('dd/MM/yyyy').format(DateTime.parse(dateVal));
+  if (dateValue != '0000-00-00' && dateValue != '') {
+    List values1 = dateValue.split("/");
     String day = values1[0].toString().padLeft(2, '0');
     String month = values1[1].toString().padLeft(2, '0');
     String year = values1[2];
     stringDate1 = '$year-$month-$day 01:01:01';
   }
-  String dateTimeVal = dateValue == '0000-00-00' || dateValue == '' ? DateFormat('dd/MM/yyyy').format(DateTime.now()) : DateFormat('dd/MM/yyyy').format(DateTime.parse(stringDate1));
-  List values  = dateTimeVal.split("/");
+  String dateTimeVal = dateValue == '0000-00-00' || dateValue == ''
+      ? DateFormat('dd/MM/yyyy').format(DateTime.now())
+      : DateFormat('dd/MM/yyyy').format(DateTime.parse(stringDate1));
+  List values = dateTimeVal.split("/");
   String day = values[0].toString().padLeft(2, '0');
   String month = values[1].toString().padLeft(2, '0');
   String year = values[2];

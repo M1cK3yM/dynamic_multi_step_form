@@ -29,37 +29,60 @@ class CommonValidation {
       {required String enteredValue,
       required Map<String, dynamic> validationStr,
       required String formFieldType,
+      Map<String, dynamic>? formData,
       isPickFromCalendar}) {
     String? errorMsg = "";
+    print("From check Validation $formData");
     switch (formFieldType) {
       case 'text':
-        return errorMsg = isValidText(enteredValue, validationStr);
+        errorMsg = isValidText(enteredValue, validationStr);
+        break;
 
       case 'password':
-        return errorMsg = isValidPassword(enteredValue, validationStr);
+        errorMsg = isValidPassword(enteredValue, validationStr);
+        break;
 
       case 'name':
-        return errorMsg = isValidName(enteredValue, validationStr);
+        errorMsg = isValidName(enteredValue, validationStr);
+        break;
 
       case 'email':
-        return errorMsg = isValidEmail(enteredValue, validationStr);
+        errorMsg = isValidEmail(enteredValue, validationStr);
+        break;
 
       case 'tel':
-        return errorMsg = isValidTel(enteredValue, validationStr);
+        errorMsg = isValidTel(enteredValue, validationStr);
+        break;
 
       case 'url':
-        return errorMsg = isValidUrl(enteredValue, validationStr);
+        errorMsg = isValidUrl(enteredValue, validationStr);
+        break;
 
       case 'number':
-        return errorMsg = isValidNumber(enteredValue, validationStr);
+        errorMsg = isValidNumber(enteredValue, validationStr);
+        break;
 
       case 'date':
-        return errorMsg = validateDate(enteredValue, validationStr,
+        errorMsg = validateDate(enteredValue, validationStr,
             isPickFromCalendar: isPickFromCalendar);
+        break;
 
       case 'text_multiline':
-        return errorMsg = isValidEmail(enteredValue, validationStr);
+        errorMsg = isValidEmail(enteredValue, validationStr);
+        break;
     }
+
+    if (errorMsg == null || errorMsg.isEmpty) {
+      if (validationStr.containsKey('matchField') &&
+          formData != null &&
+          formData[validationStr['matchField']] != enteredValue) {
+        print("$enteredValue  ${formData[validationStr['matchField']]}");
+        print("$formData");
+        errorMsg = validationStr['errorMessage']?['matchField'] ??
+            'Fields do not match';
+      }
+    }
+
     return errorMsg;
   }
 

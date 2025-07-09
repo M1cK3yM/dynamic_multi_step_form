@@ -7,13 +7,15 @@ class TextFieldView extends StatefulWidget {
   final String? nextFieldKey;
   final TextFieldConfiguration? viewConfiguration;
   final Function(String fieldKey, String fieldValue) onChangeValue;
+  final Map<String, dynamic>? formData;
 
   const TextFieldView(
       {Key? key,
       required this.jsonData,
       required this.onChangeValue,
       this.viewConfiguration,
-      this.nextFieldKey = ""})
+      this.nextFieldKey = "",
+      this.formData})
       : super(key: key);
 
   @override
@@ -450,7 +452,7 @@ class _TextFieldsState extends State<TextFieldView> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Padding(
-                                padding: EdgeInsets.only(bottom: 4,left: 2),
+                                padding: EdgeInsets.only(bottom: 4, left: 2),
                                 child: Text(
                                   textFieldModel!
                                       .elementConfig!.placeHolderLabel!,
@@ -463,7 +465,8 @@ class _TextFieldsState extends State<TextFieldView> {
                     style: textFieldModel!.elementConfig!.showTextBold == true
                         ? viewConfig!.viewConfiguration!._boldTextStyle
                         : TextStyle(fontSize: 16, color: Colors.black),
-                    focusNode: formFieldType == "date" ? null : currentFocusNode,
+                    focusNode:
+                        formFieldType == "date" ? null : currentFocusNode,
                     //strutStyle:StrutStyle(),
                     readOnly: (formFieldType == "date" && isPickFromCalendar)
                         ? true
@@ -510,7 +513,8 @@ class _TextFieldsState extends State<TextFieldView> {
                       return commonValidation.checkValidation(
                           enteredValue: value,
                           validationStr: textFieldModel!.validationStr!,
-                          formFieldType: formFieldType);
+                          formFieldType: formFieldType,
+                          formData: widget.formData);
                     },
                     onChanged: (value) {
                       if (mounted) {
@@ -518,7 +522,8 @@ class _TextFieldsState extends State<TextFieldView> {
                         commonValidation.checkValidation(
                             enteredValue: value,
                             validationStr: textFieldModel!.validationStr!,
-                            formFieldType: formFieldType);
+                            formFieldType: formFieldType,
+                            formData: widget.formData);
 
                         // if(validate !=null ){
                         //   textFieldHeight = 80;
@@ -584,7 +589,8 @@ class _TextFieldsState extends State<TextFieldView> {
     if (commonValidation.checkValidation(
             enteredValue: value,
             validationStr: textFieldModel!.validationStr!,
-            formFieldType: formFieldType) ==
+            formFieldType: formFieldType,
+            formData: widget.formData) ==
         null) {
       nextFocusNode.requestFocus();
     }
@@ -641,22 +647,21 @@ class _TextFieldsState extends State<TextFieldView> {
           return Theme(
               child: child!,
               data: ThemeData().copyWith(
-                // brightness:!isDarkMode? Brightness.light:Brightness.dark,
+                  // brightness:!isDarkMode? Brightness.light:Brightness.dark,
                   colorScheme: ColorScheme.dark(
                       primary: Color(0xff090C30),
                       onSurface: Colors.black,
                       onPrimary: Colors.white,
-                      surface:Colors.white,
-                      brightness: Brightness.light
-                  ),
-                  dialogBackgroundColor:Colors.white
-              ));
+                      surface: Colors.white,
+                      brightness: Brightness.light),
+                  dialogBackgroundColor: Colors.white));
         });
 
     if (newDate == null) return;
     _nameController!.text =
         packageUtil.getText("dd/MM/yyyy", newDate).toString();
-    onChangeValue.call(fieldKey, "${newDate.day}/${newDate.month}/${newDate.year}");
+    onChangeValue.call(
+        fieldKey, "${newDate.day}/${newDate.month}/${newDate.year}");
   }
 }
 
